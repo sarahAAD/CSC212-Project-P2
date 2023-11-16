@@ -6,15 +6,13 @@ public class Contact implements Comparable<Contact> {
     public Contact() {
 	}
 
-	public Contact(String name, String phoneNumber, String email, String address, String birthday, String notes,
-			Event Event) {
+	public Contact(String name, String phoneNumber, String email, String address, String birthday, String notes) {
 		Name = name;
 		PhoneNumber = phoneNumber;
 		Email = email;
 		Address = address;
 		Birthday = birthday;
 		Notes = notes;
-		event = Event;
 	}
 
 	public Contact(Contact obj) {
@@ -24,8 +22,8 @@ public class Contact implements Comparable<Contact> {
 		Address = obj.Address;
 		Birthday = obj.Birthday;
 		Notes = obj.Notes;
-		event = obj.event;
 
+		
 	}
 
 	@Override
