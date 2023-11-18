@@ -207,6 +207,7 @@ public class Phonebook_BST {
 				}
 				
 				switch(detailsInput) {
+				
 				case "1":
 					switch(detailSearchInput) {
 					case "1":
