@@ -179,30 +179,55 @@ public class Phonebook_BST {
 				}
 				break;
 
-			case "5": // print event detail
-				System.out.print("Enter search criteria:\n1.contact name\n2.event title\n");
-				String eventInput = scan.nextLine();
+			case "5": // print event/appointment detail
+				String ContactName=null;
+				String EventORAppointmentTitle=null;
+				
+				
+				
+				System.out.println("Choose whether you want to print the details of an event or appointment:\n1.event\n2.appointment");
+				String detailsInput = scan.nextLine();
+				
+				System.out.print("Enter search criteria:\n1.contact name\n2.event//appointment title\n");
+				String detailSearchInput = scan.nextLine();
+				
+				
 
-				switch (eventInput) { // nested switch
+				switch(detailSearchInput) {
 				case "1":
 
 					System.out.print("Enter contact name:");
-					String eventContactName = scan.nextLine();
-
+					/*String*/ ContactName = scan.nextLine();
 					break;
-
+					
 				case "2":
-					System.out.print("Enter event title:");
-					String EventTitle = scan.nextLine();
-					/*
-					 * Event eventSameTitle = PhoneBook.SearchEventByTitle(EventTitle); if
-					 * (eventSameTitle != null) System.out.println(eventSameTitle.toString()); else
-					 * System.out.println("Event not found");
-					 */
+					System.out.print("Enter event/appointment title:");
+					/*String*/ EventORAppointmentTitle = scan.nextLine();
 					break;
 				}
-
+				
+				switch(detailsInput) {
+				case "1":
+					switch(detailSearchInput) {
+					case "1":
+					PhoneBook.printEventDetails("name", ContactName);
+					break;
+					case "2":
+						PhoneBook.printEventDetails("title", EventORAppointmentTitle);
+						break;
+				}
+				case "2":
+					switch(detailSearchInput) {
+					case "1":
+					PhoneBook.printAppointmentDetails("name", ContactName);
+					break;
+					case "2":
+						PhoneBook.printAppointmentDetails("title", EventORAppointmentTitle);
+						break;
+					}
+					}
 				break;
+				
 
 			case "6": // print contacts by first name
 
@@ -229,7 +254,7 @@ public class Phonebook_BST {
 
 			case "8":
 				System.out.println("Enter event title");
-				String EventTitle = scan.nextLine();
+				String eventTitle = scan.nextLine();
 				System.out.println("Enter event date and time (MM/DD/YYYY HH:MM):");
 				String DateAndTime = scan.nextLine();
 				System.out.println("Enter event location:");
@@ -239,8 +264,9 @@ public class Phonebook_BST {
 
 			case "9":
 				Contacts.inOrder(Order.inOrder);
-
+				return;
 			}
+				
 		} while (choice != "9");
 
 	}
@@ -325,7 +351,7 @@ public class Phonebook_BST {
 
 	public void printAllEvent() {
 		if (eventList.empty()) {
-			System.out.println("there is no event");
+			System.out.println("there are no events");
 			return;
 		}
 		eventList.FindFirst();
@@ -339,7 +365,7 @@ public class Phonebook_BST {
 
 	public void printAllappointment() {
 		if (appointmentList.empty()) {
-			System.out.println("there is no appointment");
+			System.out.println("there are no appointments");
 			return;
 		}
 		appointmentList.FindFirst();
@@ -348,6 +374,67 @@ public class Phonebook_BST {
 			appointmentList.FindNext();
 		}
 		appointmentList.retrieve().displayAppointment();;
+	}
+	
+	public void printEventDetails(String criteria, String nameORTitle) {
+		if (eventList.empty()) 
+			System.out.println("There are no events");
+		switch (criteria) {
+		case "name":
+			eventList.FindFirst();
+			while (!eventList.last()) {
+				if (eventList.retrieve().getContactName().equals(nameORTitle)) //should i add an and to the condition that checks the type?
+					System.out.println(eventList.retrieve()); 
+				eventList.FindNext();
+			}
+			break;
+			
+		case "title":
+			eventList.FindFirst();
+			while (!eventList.last()) {
+				if (eventList.retrieve().getTitle().equals(nameORTitle)) 
+					System.out.println(eventList.retrieve()); 
+				eventList.FindNext();
+			}
+			break;	
+		}	
+	}
+	
+	public void printAppointmentDetails(String criteria, String nameORTitle) {
+		System.out.println("hi");
+		if (appointmentList.empty()) 
+			System.out.println("There are no appointments");
+		
+		switch (criteria) {
+		case "name":
+			appointmentList.FindFirst();
+			while (!appointmentList.last()) {
+				if (appointmentList.retrieve().getContactName().equals(nameORTitle)) 
+					System.out.println(appointmentList.retrieve()); 
+				appointmentList.FindNext();
+			}
+			
+			if (appointmentList.retrieve().getContactName().equals(nameORTitle)) 
+				System.out.println(appointmentList.retrieve()); 
+			appointmentList.FindNext();
+		
+			break;
+			
+		case "title":
+			appointmentList.FindFirst();
+			while (!appointmentList.last()) {
+				if (appointmentList.retrieve().getTitle().equals(nameORTitle)) 
+					System.out.println(appointmentList.retrieve()); 
+				appointmentList.FindNext();
+			}
+			if (appointmentList.retrieve().getTitle().equals(nameORTitle)) 
+				System.out.println(appointmentList.retrieve()); 
+			appointmentList.FindNext();
+			break;	
+			
+			default:
+				System.out.print("none of it is working");
+		}	
 	}
 
 }
