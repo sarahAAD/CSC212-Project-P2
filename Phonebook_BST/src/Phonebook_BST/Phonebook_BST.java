@@ -61,9 +61,9 @@ public class Phonebook_BST {
 					System.out.print("Enter the contact's name:");
 					String contactName = scan.nextLine();
 					Contact c = Contacts.SearchByName(contactName);
-					if (c==null)
+					if (c == null)
 						System.out.println("There is no contact with this name");
-					else 
+					else
 						System.out.println(c.toString());
 					break;
 
@@ -140,20 +140,86 @@ public class Phonebook_BST {
 				case "1":
 					System.out.print("Enter event title:");
 					String eventTitle = scan.nextLine();
-					System.out.print("Enter contact name:");
-					String contactName = scan.nextLine();
+					System.out.print("Enter contacts name separated by a comma: ");
+					String contactsName = scan.nextLine();
 					System.out.print("Enter event date and time (MM/DD/YYYY HH:MM):");
 					String eventTimeAndDate = scan.nextLine();
 					System.out.print("Enter event location:");
 					String eventLocation = scan.nextLine();
-					if (Contacts.SearchByName(contactName)!=null) {
-						Event event = new Event(contactName, eventTitle, eventTimeAndDate, eventLocation, "Event");
-						if (PhoneBook.AddEvent(event))
-							System.out.println("Event added successfully!");
-						else
-							System.out.println("event has been added before!");
-					} else
-						System.out.println("Contact doesn't exist, please add the contact first");
+					Event NewEvent = new Event(contactsName, eventTitle, eventTimeAndDate, eventLocation, "Event");
+
+					String ContactsNotFound = "";
+					String ContactsHaveConflict = "";
+					String ContactsAdded = "";
+					String Exist = "";
+					String[] names = contactsName.split(",");
+
+					if (PhoneBook.AddEvent(NewEvent)) {
+						for (int i = 0; i < names.length; i++) {
+							Contact c = Contacts.SearchByName(names[i]);
+							if (c != null) {
+
+								if (!PhoneBook.conflict(names[i], eventTimeAndDate)) {
+									NewEvent.setContactInEvent(names[i]);
+									c.setevents_appointments(NewEvent);
+									ContactsAdded += ", " + names[i];
+								} else {
+									if (!ContactsHaveConflict.isEmpty())
+										ContactsHaveConflict += ", ";
+
+									ContactsHaveConflict += names[i];
+								}
+							} else {
+								if (!ContactsNotFound.isEmpty())
+									ContactsNotFound += ", ";
+
+								ContactsNotFound += names[i];
+
+							}
+						}
+					} else {
+						Event event = eventList.search(NewEvent);
+
+						if (event != null)
+							for (int i = 0; i < names.length; i++) {
+								Contact c = Contacts.SearchByName(names[i]);
+								if (c != null) {
+									if (event.isExist(names[i])) {
+										Exist += ", " + names[i];
+									}
+
+									else if (!PhoneBook.conflict(names[i], eventTimeAndDate)) {
+										event.setContactInEvent(names[i]);
+										c.setevents_appointments(event);
+										ContactsAdded += ", " + names[i];
+									} else {
+										if (!ContactsHaveConflict.isEmpty())
+											ContactsHaveConflict += ", ";
+
+										ContactsHaveConflict += names[i];
+									}
+								} else {
+									if (!ContactsNotFound.isEmpty())
+										ContactsNotFound += ", ";
+
+									ContactsNotFound += names[i];
+
+								}
+							}
+					}
+
+					if (!ContactsNotFound.isEmpty())
+						System.out.println(ContactsNotFound + " not exist");
+
+					if (!ContactsHaveConflict.isEmpty())
+						System.out.println(ContactsHaveConflict + " have conflict");
+					if (!ContactsAdded.isEmpty())
+						System.out.println("Event scheduled successfully for: " + ContactsAdded);
+					else
+						System.out.println("can't add the event");
+
+					if (!Exist.isEmpty())
+						System.out.println("The event has been scheduled before for: " + Exist);
 
 					break;
 
@@ -166,7 +232,7 @@ public class Phonebook_BST {
 					String AppointmentTimeAndDate = scan.nextLine();
 					System.out.print("Enter Appointment location:");
 					String AppointmentLocation = scan.nextLine();
-					if (Contacts.SearchByName(contactname)!=null) {
+					if (Contacts.SearchByName(contactname) != null) {
 						Event event1 = new Event(contactname, AppointmentTitle, AppointmentTimeAndDate,
 								AppointmentLocation, "Appointment");
 						if (PhoneBook.addAppointment(event1))
@@ -180,65 +246,61 @@ public class Phonebook_BST {
 				break;
 
 			case "5": // print event/appointment detail
-				String ContactName=null;
-				String EventORAppointmentTitle=null;
-				
-				
-				
-				System.out.println("Choose whether you want to print the details of an event or appointment:\n1.event\n2.appointment");
+				String ContactName = null;
+				String EventORAppointmentTitle = null;
+
+				System.out.println(
+						"Choose whether you want to print the details of an event or appointment:\n1.event\n2.appointment");
 				String detailsInput = scan.nextLine();
-				
+
 				System.out.print("Enter search criteria:\n1.contact name\n2.event\\appointment title\n");
 				String DSearchInput = scan.nextLine();
-				
-				
 
-				switch(DSearchInput) {
+				switch (DSearchInput) {
 				case "1":
 
 					System.out.print("Enter contact name:");
-					/*String*/ ContactName = scan.nextLine();
+					/* String */ ContactName = scan.nextLine();
 					break;
-					
+
 				case "2":
 					System.out.print("Enter event\\appointment title:");
-					/*String*/ EventORAppointmentTitle = scan.nextLine();
+					/* String */ EventORAppointmentTitle = scan.nextLine();
 					break;
 				}
-				
-				switch(detailsInput) {
-				
+
+				switch (detailsInput) {
+
 				case "1":
-					switch(DSearchInput) {
+					switch (DSearchInput) {
 					case "1":
-					
+
 						PhoneBook.printEventDetails("name", ContactName);
 						break;
-						
+
 					case "2":
-						
+
 						PhoneBook.printEventDetails("title", EventORAppointmentTitle);
 						break;
-				}
-				break;
-				
+					}
+					break;
+
 				case "2":
-					switch(DSearchInput) {
+					switch (DSearchInput) {
 					case "1":
-					
+
 						PhoneBook.printAppointmentDetails("name", ContactName);
 						break;
-						
+
 					case "2":
-						
+
 						PhoneBook.printAppointmentDetails("title", EventORAppointmentTitle);
 						break;
 					}
 					break;
-					}
-				
+				}
+
 				break;
-				
 
 			case "6": // print contacts by first name
 
@@ -275,9 +337,9 @@ public class Phonebook_BST {
 
 			case "9":
 				Contacts.inOrder(Order.inOrder);
-				return;
+				break;
 			}
-				
+
 		} while (choice != "9");
 
 	}
@@ -285,15 +347,13 @@ public class Phonebook_BST {
 	public boolean AddContact(Contact contact) {
 		if (Contacts.isExist(contact))
 			return false;
-		Contacts.insertContact(contact);
-		return true;
-
+		return Contacts.insertContact(contact.getName(), contact);
 	}
 
 	public boolean AddEvent(Event event) {
 		boolean found = false;
 		if (eventList.empty()) {
-			eventList.AddEvent(event);
+			eventList.Add(event);
 
 			return true;
 		}
@@ -302,38 +362,27 @@ public class Phonebook_BST {
 
 			if (eventList.retrieve().getTitle().equals(event.getTitle())
 					&& eventList.retrieve().getDateAndTime().equals(event.getDateAndTime())) {
-				if (eventList.retrieve().isExist(event.getContactName()))
-					found = true;
-				else {
-					eventList.retrieve().setContactInEvent(event.getContactName());
-					return true;
-				}
+				found = true;
+
 			}
 			eventList.FindNext();
 
 		}
 		if (eventList.retrieve().getTitle().equals(event.getTitle())
-				&& eventList.retrieve().getDateAndTime().equals(event.getDateAndTime())) {
-			if (eventList.retrieve().isExist(event.getContactName()))
-				found = true;
-			else {
-				eventList.retrieve().setContactInEvent(event.getContactName());
-				return true;
-			}
-		}
+				&& eventList.retrieve().getDateAndTime().equals(event.getDateAndTime()))
+			found = true;
 
 		if (!found) {
-			eventList.AddEvent(event);
+			eventList.Add(event);
 			return true;
 		} else
 			return false;
 	}
 
-
 	public boolean addAppointment(Event event) {
 		boolean found = false;
 		if (appointmentList.empty()) {
-			appointmentList.AddEvent(event);
+			appointmentList.Add(event);
 			return true;
 		}
 		appointmentList.FindFirst();
@@ -354,7 +403,7 @@ public class Phonebook_BST {
 		}
 
 		if (!found) {
-			appointmentList.AddEvent(event);
+			appointmentList.Add(event);
 			return true;
 		} else
 			return false;
@@ -381,82 +430,104 @@ public class Phonebook_BST {
 		}
 		appointmentList.FindFirst();
 		while (!appointmentList.last()) {
-			appointmentList.retrieve().displayAppointment();;
+			appointmentList.retrieve().displayAppointment();
+
 			appointmentList.FindNext();
 		}
-		appointmentList.retrieve().displayAppointment();;
+		appointmentList.retrieve().displayAppointment();
+
 	}
-	
+
 	public void printEventDetails(String criteria, String nameORTitle) {
-		
-		if (eventList.empty()) 
+
+		if (eventList.empty())
 			System.out.println("There are no events");
-		
+
 		switch (criteria) {
 		case "name":
 			eventList.FindFirst();
 			while (!eventList.last()) {
-				if (eventList.retrieve().getContactName().equals(nameORTitle)) //should i add an and to the condition that checks the type?
+				if (eventList.retrieve().getContactName().equals(nameORTitle)) // should i add an and to the condition
+																				// that checks the type?
 					eventList.retrieve().displayEvent();
 				eventList.FindNext();
 			}
-			if (eventList.retrieve().getContactName().equals(nameORTitle)) 
+			if (eventList.retrieve().getContactName().equals(nameORTitle))
 				eventList.retrieve().displayEvent();
 			eventList.FindNext();
-			
+
 			break;
-			
+
 		case "title":
 			eventList.FindFirst();
 			while (!eventList.last()) {
-				if (eventList.retrieve().getTitle().equals(nameORTitle)) 
+				if (eventList.retrieve().getTitle().equals(nameORTitle))
 					eventList.retrieve().displayEvent();
 				eventList.FindNext();
 			}
-			if (eventList.retrieve().getTitle().equals(nameORTitle)) 
+			if (eventList.retrieve().getTitle().equals(nameORTitle))
 				eventList.retrieve().displayEvent();
 			eventList.FindNext();
-			
-			break;	
-			
-		
-		}	
+
+			break;
+
+		}
 	}
-	
+
 	public void printAppointmentDetails(String criteria, String nameORTitle) {
-		
-		if (appointmentList.empty()) 
+
+		if (appointmentList.empty())
 			System.out.println("There are no appointments");
-		
+
 		switch (criteria) {
 		case "name":
 			appointmentList.FindFirst();
 			while (!appointmentList.last()) {
-				if (appointmentList.retrieve().getContactName().equals(nameORTitle)) 
-					appointmentList.retrieve().displayAppointment(); 
+				if (appointmentList.retrieve().getContactName().equals(nameORTitle))
+					appointmentList.retrieve().displayAppointment();
 				appointmentList.FindNext();
 			}
-			
-			if (appointmentList.retrieve().getContactName().equals(nameORTitle)) 
-				appointmentList.retrieve().displayAppointment(); 
+
+			if (appointmentList.retrieve().getContactName().equals(nameORTitle))
+				appointmentList.retrieve().displayAppointment();
 			appointmentList.FindNext();
-			
+
 			break;
-			
+
 		case "title":
 			appointmentList.FindFirst();
 			while (!appointmentList.last()) {
-				if (appointmentList.retrieve().getTitle().equals(nameORTitle)) 
-					appointmentList.retrieve().displayAppointment(); 
+				if (appointmentList.retrieve().getTitle().equals(nameORTitle))
+					appointmentList.retrieve().displayAppointment();
 				appointmentList.FindNext();
 			}
-			if (appointmentList.retrieve().getTitle().equals(nameORTitle)) 
-				appointmentList.retrieve().displayAppointment();  
+			if (appointmentList.retrieve().getTitle().equals(nameORTitle))
+				appointmentList.retrieve().displayAppointment();
 			appointmentList.FindNext();
-			
-			break;	
-			
-		}	
+
+			break;
+
+		}
+	}
+
+	public boolean conflict(String contactName, String DateAndTime) {
+		boolean conflict = false;
+		Contact c = Contacts.SearchByName(contactName);
+		System.out.println(c.toString());
+
+		if (c.getevents_appointments().empty())
+			return conflict;
+
+		c.getevents_appointments().FindFirst();
+		while (!c.getevents_appointments().last()) {
+			if (c.getevents_appointments().retrieve().getDateAndTime().equals(DateAndTime))
+				conflict = true;
+			c.getevents_appointments().FindNext();
+		}
+		if (c.getevents_appointments().retrieve().getDateAndTime().equals(DateAndTime))
+			conflict = true;
+
+		return conflict;
 	}
 
 }

@@ -13,7 +13,8 @@ class BSTNode {
 	public Contact data;
 	public BSTNode left, right;
 
-	public BSTNode(Contact val) {
+	public BSTNode(String key, Contact val) {
+		this.key = key;
 		data = val;
 		left = right = null;
 	}
@@ -50,120 +51,156 @@ public class BST {
 		}
 	}
 
-	public void insertContact(Contact val) {
-		root = insertContact(root, val);
-	}
+	//public boolean insertContact(String key, Contact val) {
+	//	return insertContact(root, key, val);
+	//}
 
-	private BSTNode insertContact(BSTNode root, Contact val) {
-		if (root == null) { // base case
-			BSTNode newNode = new BSTNode(val);
-			current = newNode;
-			return newNode;
+	public boolean insertContact(String key, Contact val) {
+		BSTNode p, q = current;
+
+		if (findkey(key)) {
+			current = q;
+			return false;
+		}
+		p = new BSTNode(key, val);
+		if (empty()) {
+			root = current = p;
+			return true;
+		} else {
+			if (key.compareTo(current.key) < 0)
+				current.left = p;
+			else
+				current.right = p;
+			current = p;
+			return true;
 		}
 
-		if (val.compareTo(root.data) < 0)
-			root.left = insertContact(root.left, val);
-		else
-			root.right = insertContact(root.right, val);
-
-		return root;
+		/*
+		 * if (root == null) { BSTNode newNode = new BSTNode(key, val); current =
+		 * newNode; return newNode; } if (key.compareTo(root.key) == 0) return null;
+		 * 
+		 * if (key.compareTo(root.key) < 0) root.left = insertContact(root.left, key,
+		 * val); else root.right = insertContact(root.right, key, val);
+		 * 
+		 * return null;
+		 */
 	}
-
-	private boolean findkey(BSTNode root, Contact data) {
-		if (root == null)
+public boolean findkey(String key) {
+	return findkey(root, key);
+}
+	private boolean findkey(BSTNode root,String key) {
+		BSTNode p = root, q = root;
+		if (empty())
 			return false;
-		else if (data.getName().equalsIgnoreCase(root.data.getName()))
-			return true;
-		else if (((Contact) data).getName().compareToIgnoreCase(((Contact) root.data).getName()) < 0)
-			return findkey(root.left, data);
-		else
-			return findkey(root.right, data);
+		while (p != null) {
+			q = p;
+			if (p.key.compareTo(key) == 0) {
+				current = p;
+				return true;
+			} else if (key.compareTo(p.key) < 0)
+				p = p.left;
+			else
+				p = p.right;
+		}
+		current = q;
+		return false;
 	}
 
-	public boolean findkey(Contact data) {
-		return findkey(root, data);
-	}
-
-	private boolean isExist(BSTNode root, String name, String phoneNum) {
+	private boolean isExist(BSTNode root, String phoneNum) {
 		if (root == null) {
 			return false;
 		}
+		boolean left = isExist(root.left, phoneNum);
 
-		if (root.data.getPhoneNumber().equalsIgnoreCase(phoneNum) || root.data.getName().equalsIgnoreCase(name))
+		if (root.data.getPhoneNumber().equalsIgnoreCase(phoneNum))
 			return true;
 
-		boolean right = isExist(root.right, name, phoneNum);
-		boolean left = isExist(root.left, name, phoneNum);
+		boolean right = isExist(root.right, phoneNum);
+		
 		return right || left;
 	}
 
 	public boolean isExist(Contact contact) {
-		return isExist(root, contact.getName(), contact.getPhoneNumber());
+		return isExist(root,contact.getPhoneNumber());
 	}
 
 	private boolean Search(BSTNode p, String n, String data) {
-		boolean found = false;
+		boolean found = false , left,right ;
 		switch (n) {
 		case "PhoneNumber":
+			
 			if (p == null)
 				return false;
-
+			
+			left=Search(p.left, n, data);
+			
 			if (p.data.getPhoneNumber().equals(data)) {
 				System.out.println(p.data.toString());
 				return true;
 			}
-			Search(p.left, n, data);
-			Search(p.right, n, data);
+			right= Search(p.right, n, data);
+			found = left || right;
 			break;
 
 		case "FirstName":
 			if (p == null)
 				return false;
-			Search(p.left, n, data);
+			
+			left=Search(p.left, n, data);
+			
 			int index = p.data.getName().indexOf(" ");
 			if (index != -1) {
 				String firstName = p.data.getName().substring(0, index);
 				if (firstName.equalsIgnoreCase(data))
 					System.out.println(p.data.toString());
-				found = true;
+				return true;
 			}
-			Search(p.right, n, data);
+			
+			right=Search(p.right, n, data);
+			found = left||right;
 			break;
+
 
 		case "Email":
 			if (p == null)
 				return false;
+			
+			left=Search(p.left, n, data);
 
-			Search(p.left, n, data);
 			if (p.data.getEmail().equals(data)) {
 				System.out.println(p.data.toString());
-				found = true;
+				return true;
 			}
-			Search(p.right, n, data);
+			right= Search(p.right, n, data);
+			found = left || right;
 			break;
 
 		case "Birthday":
 			if (p == null)
 				return false;
 
-			Search(p.left, n, data);
+			left=Search(p.left, n, data);
+
 			if (p.data.getBirthday().equals(data)) {
 				System.out.println(p.data.toString());
-				found = true;
+				return true;
 			}
-			Search(p.right, n, data);
+			right= Search(p.right, n, data);
+			found = left || right;
 			break;
 
 		case "Address":
 			if (p == null)
 				return false;
-
-			Search(p.left, n, data);
+			
+			left=Search(p.left, n, data);
+			
 			if (p.data.getAddress().equals(data)) {
 				System.out.println(p.data.toString());
-				found = true;
+				return true;
 			}
-			Search(p.right, n, data);
+			right= Search(p.right, n, data);
+			found = left || right;
 			break;
 		}
 		return found;
@@ -172,11 +209,11 @@ public class BST {
 	public boolean Search(String n, String data) {
 		return Search(root, n, data);
 	}
-	
+
 	public Contact SearchByName(String name) {
-		return SearchByName(root,name);
+		return SearchByName(root, name);
 	}
-	
+
 	private Contact SearchByName(BSTNode p, String name) {
 		if (p == null)
 			return null;

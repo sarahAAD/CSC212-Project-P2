@@ -17,7 +17,6 @@ public class Event {
 		location = event.location;
 		Type = event.Type;
 		contactName = event.contactName;
-		ContactInEvent.insert(contactName);
 
 	}
 
@@ -27,7 +26,6 @@ public class Event {
 		this.location = location;
 		Type = type;
 		this.contactName = contactName;
-		ContactInEvent.insert(contactName);
 
 	}
 
@@ -35,18 +33,19 @@ public class Event {
 		return Title.compareTo(event.Title);
 	}
 
-	public boolean isExist(String contactName) {
+	public boolean isExist(String ContactName) {
+		
 		boolean found = false;
 		if (ContactInEvent.empty())
 			return false;
 		else {
 			ContactInEvent.FindFirst();
 			while (!ContactInEvent.last()) {
-				if (ContactInEvent.retrieve().equalsIgnoreCase(contactName))
+				if (ContactInEvent.retrieve().equalsIgnoreCase(ContactName))
 					found = true;
 				ContactInEvent.FindNext();
 			}
-			if (ContactInEvent.retrieve().equalsIgnoreCase(contactName))
+			if (ContactInEvent.retrieve().equalsIgnoreCase(ContactName))
 				found = true;
 			return found;
 
@@ -89,6 +88,16 @@ public class Event {
 		return ContactInEvent;
 	}
 
+	public void printContactInEvent() {
+
+		ContactInEvent.FindFirst();
+		while (!ContactInEvent.last()) {
+			System.out.print(ContactInEvent.retrieve() + " , ");
+			ContactInEvent.FindNext();
+		}
+		System.out.print(ContactInEvent.retrieve() + "\n");
+	}
+
 	public void setContactInEvent(String contactName) {
 		ContactInEvent.insert(contactName);
 	}
@@ -102,19 +111,20 @@ public class Event {
 	}
 
 	public void displayEvent() {
-		System.out.println("Title: " + Title + "\nDateAndTime: " + DateAndTime + "\nlocation: " + location+"\nContacts name:");
+		System.out.println(
+				"Title: " + Title + "\nDateAndTime: " + DateAndTime + "\nlocation: " + location + "\nContacts name:");
 
 		ContactInEvent.FindFirst();
 		while (!ContactInEvent.last()) {
 			System.out.println(ContactInEvent.retrieve());
 			ContactInEvent.FindNext();
 		}
-		System.out.println(ContactInEvent.retrieve()+"\n");
-		;
+		System.out.println(ContactInEvent.retrieve() + "\n");
+
 	}
 
 	public void displayAppointment() {
 		System.out.println("Title: " + Title + "\nDateAndTime: " + DateAndTime + "\nlocation: " + location
-				+ "\nContact name: " + contactName+"\n");
+				+ "\nContact name: " + contactName + "\n");
 	}
 }

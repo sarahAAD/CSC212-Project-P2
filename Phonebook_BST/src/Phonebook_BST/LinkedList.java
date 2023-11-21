@@ -50,7 +50,7 @@ public class LinkedList<T> {
 		current.data = val;
 	}
 
-	public void AddEvent(T val) {
+	public void Add(T val) {
 		Node<T> tmp = new Node<T>(val);
 		if (head == null) {
 			current = head = tmp;
@@ -73,31 +73,48 @@ public class LinkedList<T> {
 		}
 	}
 
-	public T search(T val) {
+	public Event search(Event val) {
 		Node<T> tmp = head;
-		while (tmp.data != val)
+
+		while (tmp != null) {
+			Event Event = (Event) tmp.data;
+
+			if (Event.getTitle().equals(((Event)val).getTitle())
+					&& Event.getDateAndTime().equals(((Event)val).getDateAndTime())) {
+				
+				return Event;
+			}
+
 			tmp = tmp.next;
-		return tmp.data;
+		}
+
+		return null;
 	}
 
+	
+
 	public void remove() {
+		if (current == null) {
+			return;
+		}
+
 		if (current == head) {
 			head = head.next;
-		}
-
-		else {
+		} else {
 			Node<T> tmp = head;
-			while (tmp.next != current)
+			while (tmp.next != null && tmp.next != current)
 				tmp = tmp.next;
-			tmp.next = current.next;
 
-			if (current.next == null)
+			if (tmp.next != null) {
+				tmp.next = current.next;
+			}
+
+			if (current.next == null) {
 				current = head;
-			else
+			} else {
 				current = current.next;
-
+			}
 		}
-
 	}
 
 	public void insert(T d) {

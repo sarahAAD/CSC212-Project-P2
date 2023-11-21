@@ -1,8 +1,8 @@
 package Phonebook_BST;
 
-public class Contact implements Comparable<Contact> {
+public class Contact implements Comparable<String> {
     private String Name, PhoneNumber, Email, Address, Birthday, Notes;
-	private Event event;
+	private LinkedList<Event> events_appointments = new LinkedList<>();
     public Contact() {
 	}
 
@@ -27,9 +27,9 @@ public class Contact implements Comparable<Contact> {
 	}
 
 	@Override
-	public int compareTo(Contact contact) {
+	public int compareTo(String contactName) {
 
-		return Name.compareTo(contact.Name);
+		return Name.compareTo(contactName);
 	}
 
 	public String toString() {
@@ -85,13 +85,15 @@ public class Contact implements Comparable<Contact> {
 		this.Notes = notes;
 	}
 
-	public Event getEvent() {
-		return event;
+	public LinkedList<Event> getevents_appointments() {
+		return events_appointments;
 	}
 
-	public void setEvent(Event event) {
-		this.event = event;
+	public void setevents_appointments(Event event) {
+		this.events_appointments.Add(event);;
 	}
+
+
 
 
 }
