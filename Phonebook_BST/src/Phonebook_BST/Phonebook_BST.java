@@ -334,7 +334,7 @@ public class Phonebook_BST {
 				String DateAndTime = scan.nextLine();
 				System.out.println("Enter event location:");
 				String Location = scan.nextLine();
-				// PhoneBook.PrintSameEvent(EventTitle, DateAndTime, Location);
+				PhoneBook.PrintSameEvent(eventTitle, DateAndTime, Location);
 				break;
 
 			case "9":
@@ -512,10 +512,39 @@ public class Phonebook_BST {
 		}
 	}
 
+	public void PrintSameEvent(String eventTitle, String DateAndTime, String Location) {
+		LinkedList<String> ContactsShareEvent = new LinkedList<String>();
+		if (eventList.empty())
+			System.out.println("There is no event with this name");
+		else {
+			eventList.FindFirst();
+			while (!eventList.last()) {
+				if (eventList.retrieve().getTitle().equalsIgnoreCase(eventTitle)
+						&& eventList.retrieve().getDateAndTime().equals(DateAndTime)
+						&& eventList.retrieve().getLocation().equals(Location))
+					ContactsShareEvent = eventList.retrieve().getContactInEvent();
+				eventList.FindNext();
+
+			}
+			if (eventList.retrieve().getTitle().equalsIgnoreCase(eventTitle)
+					&& eventList.retrieve().getDateAndTime().equals(DateAndTime)
+					&& eventList.retrieve().getLocation().equals(Location)) {
+				ContactsShareEvent = eventList.retrieve().getContactInEvent();
+
+			}
+		}
+		ContactsShareEvent.FindFirst();
+		while(!ContactsShareEvent.last()) {
+			System.out.println(Contacts.SearchByName(ContactsShareEvent.retrieve()));
+			ContactsShareEvent.FindNext();
+		}
+		System.out.println(Contacts.SearchByName(ContactsShareEvent.retrieve()));
+
+	}
+
 	public boolean conflict(String contactName, String DateAndTime) {
 		boolean conflict = false;
 		Contact c = Contacts.SearchByName(contactName);
-
 
 		if (c.getevents_appointments().empty())
 			return conflict;
