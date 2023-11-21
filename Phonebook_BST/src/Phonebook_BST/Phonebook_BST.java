@@ -232,12 +232,14 @@ public class Phonebook_BST {
 					String AppointmentTimeAndDate = scan.nextLine();
 					System.out.print("Enter Appointment location:");
 					String AppointmentLocation = scan.nextLine();
-					if (Contacts.SearchByName(contactname) != null) {
-						Event event1 = new Event(contactname, AppointmentTitle, AppointmentTimeAndDate,
+					Contact c = Contacts.SearchByName(contactname);
+					if (c != null) {
+						Event appointment = new Event(contactname, AppointmentTitle, AppointmentTimeAndDate,
 								AppointmentLocation, "Appointment");
-						if (PhoneBook.addAppointment(event1))
+						if (PhoneBook.addAppointment(appointment)) {
 							System.out.println("Appointment added successfully!");
-						else
+							c.setevents_appointments(appointment);
+						} else
 							System.out.println("Appointment has been added before!");
 					} else
 						System.out.println("Contact doesn't exist, please add the contact first");
@@ -379,31 +381,31 @@ public class Phonebook_BST {
 			return false;
 	}
 
-	public boolean addAppointment(Event event) {
+	public boolean addAppointment(Event appointment) {
 		boolean found = false;
 		if (appointmentList.empty()) {
-			appointmentList.Add(event);
+			appointmentList.Add(appointment);
 			return true;
 		}
 		appointmentList.FindFirst();
 		while (!appointmentList.last()) {
 
-			if (appointmentList.retrieve().getTitle().equals(event.getTitle())
-					|| appointmentList.retrieve().getDateAndTime().equals(event.getDateAndTime())) {
-				if (appointmentList.retrieve().getContactName().equals(event.getContactName()))
+			if (appointmentList.retrieve().getTitle().equals(appointment.getTitle())
+					|| appointmentList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
+				if (appointmentList.retrieve().getContactName().equals(appointment.getContactName()))
 					found = true;
 			}
 			appointmentList.FindNext();
 
 		}
-		if (appointmentList.retrieve().getTitle().equals(event.getTitle())
-				|| appointmentList.retrieve().getDateAndTime().equals(event.getDateAndTime())) {
-			if (appointmentList.retrieve().getContactName().equals(event.getContactName()))
+		if (appointmentList.retrieve().getTitle().equals(appointment.getTitle())
+				|| appointmentList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
+			if (appointmentList.retrieve().getContactName().equals(appointment.getContactName()))
 				found = true;
 		}
 
 		if (!found) {
-			appointmentList.Add(event);
+			appointmentList.Add(appointment);
 			return true;
 		} else
 			return false;
@@ -513,7 +515,7 @@ public class Phonebook_BST {
 	public boolean conflict(String contactName, String DateAndTime) {
 		boolean conflict = false;
 		Contact c = Contacts.SearchByName(contactName);
-		System.out.println(c.toString());
+
 
 		if (c.getevents_appointments().empty())
 			return conflict;
