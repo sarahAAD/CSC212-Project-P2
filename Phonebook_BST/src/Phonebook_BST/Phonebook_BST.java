@@ -111,11 +111,23 @@ public class Phonebook_BST {
 					System.out.print("Enter contact name:");
 					String deleteName = scan.nextLine();
 
-					/*
-					 * if (PhoneBook.DeleteContactByName(deleteName))
-					 * System.out.println("Contact deleted successfully"); else
-					 * System.out.println("Contact not found");
-					 */
+					if (appointmentList.empty())
+					System.out.println("");
+				else {
+					appointmentList.FindFirst();
+					while (!appointmentList.last()) {
+						if (appointmentList.retrieve().getContactName().equals(deleteName))
+							appointmentList.remove();
+						appointmentList.FindNext();
+					}
+					if (appointmentList.retrieve().getContactName().equals(deleteName))
+						appointmentList.remove();
+
+				}
+				if (PhoneBook.DeleteContactByName(deleteName))
+					System.out.println("Contact deleted successfully");
+				else
+					System.out.println("Contact not found");
 
 					break;
 
@@ -604,5 +616,18 @@ public class Phonebook_BST {
 
 		return conflict;
 	}
+
+     public boolean DeleteContactByName(String name) {
+	if (Contacts.empty())
+		return false;
+	else 
+		return Contacts.removekey(name);
+
+
+}
+
+	
+
+	
 
 }
