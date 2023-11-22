@@ -7,6 +7,7 @@ public class Event {
 	private String contactName;
 	private LinkedList<String> ContactInEvent = new LinkedList<String>();
 	private String Type;
+	private int size;
 
 	public Event() {
 	}
@@ -100,6 +101,16 @@ public class Event {
 
 	public void setContactInEvent(String contactName) {
 		ContactInEvent.insert(contactName);
+		size++;
+	}
+
+	
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 	public String getType() {

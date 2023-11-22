@@ -483,9 +483,10 @@ public class Phonebook_BST {
 				for (int i=0; i < contactNames.length; i++) {
 				if (eventList.retrieve().getContactName().contains(contactNames[i])) 
 					count++;
+				else count--;
 				}
 				//String eventContactNames[]=eventList.retrieve().getContactName().split(",");
-			if (count==contactNames.length) {
+			if (count==eventList.retrieve().getSize()) {
 					eventList.retrieve().displayEvent();
 			}
 					count=0;
@@ -495,9 +496,10 @@ public class Phonebook_BST {
 			for (int i=0; i < contactNames.length; i++) {
 				if (eventList.retrieve().getContactName().contains(contactNames[i])) 
 					count++;
+				else count--;
 	}
 			//String eventContactNames[]=eventList.retrieve().getContactName().split(",");
-			if (count==contactNames.length) 
+			if (count==eventList.retrieve().getSize()) 
 				eventList.retrieve().displayEvent();
 
 			break;
