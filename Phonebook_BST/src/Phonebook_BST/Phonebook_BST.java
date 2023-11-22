@@ -258,48 +258,73 @@ public class Phonebook_BST {
 
 				System.out.println(
 						"Choose whether you want to print the details of an event or appointment:\n1.event\n2.appointment");
-				String detailsInput = scan.nextLine();
+				String Type = scan.nextLine();
 
 				System.out.print("Enter search criteria:\n1.contact name\n2.event\\appointment title\n");
-				String DSearchInput = scan.nextLine();
+				String criteria = scan.nextLine();
 
-				switch (DSearchInput) {
-				case "1":
+				switch (criteria) {
+				
+				case "1": //when search by contact name is chosen
+					
+				switch (Type) {
+				
+				case "1": // search by contact name for event
 
-					System.out.print("Enter contact name:");
+					System.out.print("Enter contacts name seperated by a comma:");
 					/* String */ ContactName = scan.nextLine();
 					break;
 
-				case "2":
-					System.out.print("Enter event\\appointment title:");
-					/* String */ EventORAppointmentTitle = scan.nextLine();
+				case "2": // search by contact name for appointment
+					System.out.print("Enter contact name:");
+					 ContactName = scan.nextLine();
+					break;
+				}
+				break;
+				
+				case "2": //when search by title is chosen
+					
+					switch (Type) {
+					
+					case "1": // search by title for event
+
+						System.out.print("Enter event title:");
+						/* String */ EventORAppointmentTitle = scan.nextLine();
+						break;
+
+					case "2": // search by title for appointment
+						System.out.print("Enter appointment title:");
+						/* String */ EventORAppointmentTitle = scan.nextLine();
+						break;
+					}
 					break;
 				}
 
-				switch (detailsInput) {
+				switch (Type) {
 
-				case "1":
-					switch (DSearchInput) {
-					case "1":
+				case "1": //search for event
+					switch (criteria) {
+					case "1": //contacts names
 
 						PhoneBook.printEventDetails("name", ContactName);
 						break;
 
-					case "2":
+					case "2": //event title
 
 						PhoneBook.printEventDetails("title", EventORAppointmentTitle);
 						break;
 					}
 					break;
 
-				case "2":
-					switch (DSearchInput) {
-					case "1":
+				case "2": //search for appointment
+					
+					switch (criteria) {
+					case "1": //contact name
 
 						PhoneBook.printAppointmentDetails("name", ContactName);
 						break;
 
-					case "2":
+					case "2": //appointment title
 
 						PhoneBook.printAppointmentDetails("title", EventORAppointmentTitle);
 						break;
@@ -450,16 +475,30 @@ public class Phonebook_BST {
 
 		switch (criteria) {
 		case "name":
+			int count=0;
+			String contactNames[] = nameORTitle.split(",");
+			
 			eventList.FindFirst();
 			while (!eventList.last()) {
-				if (eventList.retrieve().getContactName().equals(nameORTitle)) // should i add an and to the condition
-																				// that checks the type?
+				for (int i=0; i < contactNames.length; i++) {
+				if (eventList.retrieve().getContactName().contains(contactNames[i])) 
+					count++;
+				}
+				//String eventContactNames[]=eventList.retrieve().getContactName().split(",");
+			if (count==contactNames.length) {
 					eventList.retrieve().displayEvent();
-				eventList.FindNext();
 			}
-			if (eventList.retrieve().getContactName().equals(nameORTitle))
+					count=0;
+				eventList.FindNext();
+				count=0;
+			}
+			for (int i=0; i < contactNames.length; i++) {
+				if (eventList.retrieve().getContactName().contains(contactNames[i])) 
+					count++;
+	}
+			//String eventContactNames[]=eventList.retrieve().getContactName().split(",");
+			if (count==contactNames.length) 
 				eventList.retrieve().displayEvent();
-			eventList.FindNext();
 
 			break;
 

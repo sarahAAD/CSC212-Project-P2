@@ -226,4 +226,70 @@ public boolean findkey(String key) {
 		else
 		return SearchByName(p.right, name);
 	}
+	
+	
+	
+	public boolean removekey(String key) {
+		
+	String k1 = key;
+	BSTNode p = root;
+	BSTNode q = null;	
+	
+	while(p != null) {
+	if (k1.compareToIgnoreCase(p.key) < 0) {
+		q = p;
+		p = p.left;
+	} else if (k1.compareToIgnoreCase(p.key) > 0) {
+		q = p;
+		p = p.right;
+	}else {
+		
+		if((p.left != null)&& (p.right != null)) {
+			
+			BSTNode min = p.right;
+			q = p;
+			while (min.left != null) {
+				
+				q = min;
+				min = min.left;
+			}
+			    p.key = min.key;
+				p.data = min.data;
+				k1 = min.key;
+				p = min;
+			}
+			
+			if (p.left != null) {
+				p = p.left;
+				
+			} else { p = p.right; }
+			
+			if (q == null ) {
+				root = p;
+				
+			} else { 
+				if(k1.compareToIgnoreCase(q.key) < 0) {
+					q.left = p;
+				} else { q.right = p; }
+				
+			}
+			current = root;
+			return true;
+			
+		}
+		
+	}
+	return false;
+	
+	}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
