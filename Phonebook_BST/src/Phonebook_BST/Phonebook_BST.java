@@ -617,14 +617,39 @@ public class Phonebook_BST {
 		return conflict;
 	}
 
-     public boolean DeleteContactByName(String name) {
+   public boolean DeleteContactByName(String name) {
+        boolean deleted = false;
 	if (Contacts.empty())
-		return false;
+		return deleted;
 	else 
-		return Contacts.removekey(name);
+		if(!eventList.empty())
+        eventList.FindFirst();
+        while(!eventList.last()){
+            if(eventList.retrieve().isExist(name)){
+            DeleteContactInEvent(eventList.retrieve(), name);
+            deleted=true;
+            }
+            eventList.FindNext();
+        }
+         if(eventList.retrieve().isExist(name)){
+            DeleteContactInEvent(eventList.retrieve(), name);
+            deleted=true;
+            }
 
-
+            return deleted;
 }
+
+public void DeleteContactInEvent(Event event, String name){
+    event.getContactInEvent().FindFirst();
+    while (!event.getContactInEvent().last()){
+        if(event.getContactInEvent().retrieve().equals(name))
+        event.getContactInEvent().remove();
+        event.getContactInEvent().FindNext();
+    }
+    if(event.getContactInEvent().retrieve().equals(name))
+        event.getContactInEvent().remove();
+}
+
 
 	
 
