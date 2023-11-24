@@ -35,7 +35,7 @@ public class Event {
 	}
 
 	public boolean isExist(String ContactName) {
-		
+
 		boolean found = false;
 		if (ContactInEvent.empty())
 			return false;
@@ -50,6 +50,21 @@ public class Event {
 				found = true;
 			return found;
 
+		}
+	}
+
+	public void DeleteContactInEvent(String name) {
+		ContactInEvent.FindFirst();
+		while (!ContactInEvent.last()) {
+			if (ContactInEvent.retrieve().equals(name)) {
+				ContactInEvent.remove();
+				size--;
+			}
+			ContactInEvent.FindNext();
+		}
+		if (ContactInEvent.retrieve().equals(name)) {
+			ContactInEvent.remove();
+			size--;
 		}
 	}
 
@@ -104,7 +119,6 @@ public class Event {
 		size++;
 	}
 
-	
 	public int getSize() {
 		return size;
 	}
