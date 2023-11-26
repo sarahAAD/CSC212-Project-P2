@@ -70,8 +70,11 @@ public class Phonebook_BST {
 				case "2":
 					System.out.print("Enter the contact's phone number:");
 					String contactPhoneNumber = scan.nextLine();
-					if (!Contacts.Search("PhoneNumber", contactPhoneNumber))
+					Contact c2 = Contacts.SearchByPhoneNumber(contactPhoneNumber);
+					if (c2 == null)
 						System.out.println("There is no contact with this phone number");
+					else
+						System.out.println(c2.toString());
 
 					break;
 
@@ -124,7 +127,7 @@ public class Phonebook_BST {
 							appointmentList.remove();
 
 					}
-					if (PhoneBook.DeleteContactByName(deleteName))
+					if (PhoneBook.DeleteContact(deleteName))
 						System.out.println("Contact deleted successfully");
 					else
 						System.out.println("Contact not found");
@@ -134,12 +137,30 @@ public class Phonebook_BST {
 				case "2":
 					System.out.print("Enter contact phone number:");
 					String deletePhoneNumber = scan.nextLine();
+					Contact ContactToDelete = Contacts.SearchByPhoneNumber(deletePhoneNumber);// search for the contact
+					if (ContactToDelete != null) { // if the contact found
+						if (appointmentList.empty())
+							System.out.println("");
+						else {
+							appointmentList.FindFirst();
+							while (!appointmentList.last()) {
+								if (appointmentList.retrieve().getContactName().equals(ContactToDelete.getName()))
+									appointmentList.remove();
+								appointmentList.FindNext();
+							}
+							if (appointmentList.retrieve().getContactName().equals(ContactToDelete.getName()))
+								appointmentList.remove();
 
-					/*
-					 * if (PhoneBook.DeleteContactByPhoneNumber(deletePhoneNumber))
-					 * System.out.println("Contact deleted successfully"); else
-					 * System.out.println("Contact not found");
-					 */
+						}
+
+						if (PhoneBook.DeleteContact(ContactToDelete.getName()))
+							System.out.println("Contact deleted successfully");
+						else
+							System.out.println("Contact not found");
+					} else
+						System.out.println("Contact not found");
+
+					break;
 
 				}
 				break;
@@ -160,84 +181,76 @@ public class Phonebook_BST {
 					String eventLocation = scan.nextLine();
 					Event NewEvent = new Event(contactsName, eventTitle, eventTimeAndDate, eventLocation, "Event");
 
-					String ContactsNotFound = "";
-					String ContactsHaveConflict = "";
-					String ContactsAdded = "";
-					String Exist = "";
+					String ContactsNotFound = ""; // contacts not found in the Contacts BST.
+					String ContactsAdded = ""; // contacts that have successfully scheduled for the event.
+					String Exist = ""; // contacts that have already successfully scheduled for the event.
 					String[] names = contactsName.split(",");
 
-					Event event = eventList.search(NewEvent);
+					Event event = eventList.search(NewEvent); // check whether the event has already been added by
+																// searching.
 
-					if (event != null) {
+					if (event != null) { // "if the event already exists in eventList.
 						for (int i = 0; i < names.length; i++) {
-							Contact c = Contacts.SearchByName(names[i]);
-							if (c != null) {
-								if (event.isExist(names[i])) {
+							Contact c = Contacts.SearchByName(names[i]); // search for every contact.
+							if (c != null) { // if the contacts found
+								if (event.isExist(names[i])) { // check if it exists in the event.
 									Exist += ", " + names[i];
 								}
 
-								else if (!PhoneBook.conflict(names[i], eventTimeAndDate)) {
-									event.setContactInEvent(names[i]);
-									c.setevents_appointments(event);
-									ContactsAdded += ", " + names[i];
-								} else {
-									if (!ContactsHaveConflict.isEmpty())
-										ContactsHaveConflict += ", ";
-
-									ContactsHaveConflict += names[i];
-								}
-							} else {
-								if (!ContactsNotFound.isEmpty())
-									ContactsNotFound += ", ";
-
-								ContactsNotFound += names[i];
-
-							}
-						}
-					}
-
-					else {
-						for (int i = 0; i < names.length; i++) {
-							Contact c = Contacts.SearchByName(names[i]);
-							if (c != null) {
-
-								if (!PhoneBook.conflict(names[i], eventTimeAndDate)) {
-									NewEvent.setContactInEvent(names[i]);
-									c.setevents_appointments(NewEvent);
-									ContactsAdded += ", " + names[i];
-								} else {
-									if (!ContactsHaveConflict.isEmpty())
-										ContactsHaveConflict += ", ";
-
-									ContactsHaveConflict += names[i];
-								}
-							} else {
+							} else { // if the contact is not found
 								if (!ContactsNotFound.isEmpty())
 									ContactsNotFound += ", ";
 
 								ContactsNotFound += names[i];
 							}
 
-						}
+						} // end for
+					} // end if
 
-					}
-					if (ContactsAdded.isEmpty())
-						System.out.println("can't add the event");
 					else {
-						if (PhoneBook.AddEvent(NewEvent)) {
+						if (!PhoneBook.Conflict(eventTimeAndDate)) {// If it's a new event.
+							for (int i = 0; i < names.length; i++) {
+								Contact c = Contacts.SearchByName(names[i]); // search for every contact.
+								if (c != null) { // if the contact exist
 
-							if (!ContactsNotFound.isEmpty())
-								System.out.println(ContactsNotFound + " not exist");
+									NewEvent.setContactInEvent(names[i]); // add the contact name to the list of
+																			// contacts in
+																			// the event.
+									c.setevents_appointments(NewEvent); // include the event in the contact's
+																		// events_appointments list
+									ContactsAdded += ", " + names[i]; // add the name here for printing
 
-						if (!ContactsHaveConflict.isEmpty())
-							System.out.println(ContactsHaveConflict + " have conflict");
-						if (!ContactsAdded.isEmpty())
-							System.out.println("Event scheduled successfully for: " + ContactsAdded);
+								} else { // if the contact does not exist
+									if (!ContactsNotFound.isEmpty())
+										ContactsNotFound += ", ";
 
-						if (!Exist.isEmpty())
-							System.out.println("The event has been scheduled before for: " + Exist);}
+									ContactsNotFound += names[i];
+								}
 
-						else
+							}
+
+							if (ContactsAdded.isEmpty())
+								System.out.println("can't add the event");
+							else {
+								if (PhoneBook.AddEvent(NewEvent)) // if a contact is added, call the method AddEvent to
+																	// create
+																	// the object and add it to the eventList.
+								{
+
+									if (!ContactsNotFound.isEmpty()) // print the names of contacts that do not exist
+										System.out.println(ContactsNotFound + " not exist");
+
+									if (!ContactsAdded.isEmpty()) // print the names of contacts that have successfully
+																	// scheduled for the event
+										System.out.println("Event scheduled successfully for: " + ContactsAdded);
+
+									if (!Exist.isEmpty()) // print the names of contacts that are already scheduled for
+															// the
+															// event
+										System.out.println("The event has been scheduled before for: " + Exist);
+								}
+							}
+						} else
 							System.out.println("can't add the event");
 					}
 					break;
@@ -253,18 +266,20 @@ public class Phonebook_BST {
 					String AppointmentLocation = scan.nextLine();
 					Contact c = Contacts.SearchByName(contactname);
 					if (c != null) {
-						if (!PhoneBook.conflict(contactname, AppointmentTimeAndDate)) {
+						if (!PhoneBook.Conflict(AppointmentTimeAndDate)) {
 							Event appointment = new Event(contactname, AppointmentTitle, AppointmentTimeAndDate,
 									AppointmentLocation, "Appointment");
+
 							if (PhoneBook.addAppointment(appointment)) {
 								System.out.println("Appointment added successfully!");
 								c.setevents_appointments(appointment);
-							} else
-								System.out.println("Appointment has been added before!");
-						} else
+							}
+						} else {
 							System.out.println("Contact has a conflict, can't add the appointment.");
-					} else
+						}
+					} else {
 						System.out.println("Contact doesn't exist, please add the contact first.");
+					}
 
 				}
 				break;
@@ -501,7 +516,6 @@ public class Phonebook_BST {
 					else
 						count--;
 				}
-				// String eventContactNames[]=eventList.retrieve().getContactName().split(",");
 				if (count == eventList.retrieve().getSize()) {
 					eventList.retrieve().displayEvent();
 				}
@@ -515,7 +529,6 @@ public class Phonebook_BST {
 				else
 					count--;
 			}
-			// String eventContactNames[]=eventList.retrieve().getContactName().split(",");
 			if (count == eventList.retrieve().getSize())
 				eventList.retrieve().displayEvent();
 
@@ -608,26 +621,32 @@ public class Phonebook_BST {
 		}
 	}
 
-	public boolean conflict(String contactName, String DateAndTime) {
-		boolean conflict = false;
-		Contact c = Contacts.SearchByName(contactName);
+	public boolean Conflict(String DateAndTime) {
+		if (!eventList.empty()) {
 
-		if (c.getevents_appointments().empty())
-			return conflict;
-
-		c.getevents_appointments().FindFirst();
-		while (!c.getevents_appointments().last()) {
-			if (c.getevents_appointments().retrieve().getDateAndTime().equals(DateAndTime))
-				conflict = true;
-			c.getevents_appointments().FindNext();
+			eventList.FindFirst();
+			while (!eventList.last()) {
+				if (eventList.retrieve().getDateAndTime().equals(DateAndTime))
+					return true;
+				eventList.FindNext();
+			}
+			if (eventList.retrieve().getDateAndTime().equals(DateAndTime))
+				return true;
 		}
-		if (c.getevents_appointments().retrieve().getDateAndTime().equals(DateAndTime))
-			conflict = true;
-
-		return conflict;
+		if (!appointmentList.empty()) {
+			appointmentList.FindFirst();
+			while (!appointmentList.last()) {
+				if (appointmentList.retrieve().getDateAndTime().equals(DateAndTime))
+					return true;
+				appointmentList.FindNext();
+			}
+			if (appointmentList.retrieve().getDateAndTime().equals(DateAndTime))
+				return true;
+		}
+		return false;
 	}
 
-	public boolean DeleteContactByName(String name) {
+	public boolean DeleteContact(String name) {
 		if (Contacts.empty())
 			return false;
 		else {
