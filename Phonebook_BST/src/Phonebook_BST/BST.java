@@ -113,13 +113,13 @@ public class BST {
 		return isExist(root, contact.getPhoneNumber());
 	}
 
-	private void Search(BSTNode p, String n,LinkedList<Contact> result, String data) {
-		switch (n) {
+	private void Search(BSTNode p, String criteria, LinkedList<Contact> result, String data) {
+		switch (criteria) {
 
 		case "FirstName":
 			if (p == null)
-				return ;
-			Search(p.left, n,result, data);
+				return;
+			Search(p.left, criteria, result, data);
 
 			int index = p.data.getName().indexOf(" ");
 			if (index != -1) {
@@ -129,51 +129,51 @@ public class BST {
 				}
 			}
 
-			Search(p.right, n,result, data);
+			Search(p.right, criteria, result, data);
 			break;
 
 		case "Email":
 			if (p == null)
-				return ;
+				return;
 
-			Search(p.left, n,result, data);
+			Search(p.left, criteria, result, data);
 			if (p.data.getEmail().equals(data)) {
 				result.insert(p.data);
 			}
 
-			Search(p.right, n,result, data);
+			Search(p.right, criteria, result, data);
 			break;
 
 		case "Birthday":
 			if (p == null)
 				return;
 
-			Search(p.left, n,result, data);
+			Search(p.left, criteria, result, data);
 
 			if (p.data.getBirthday().equals(data)) {
-				result.insert(p.data);				
+				result.insert(p.data);
 			}
-			Search(p.right, n,result, data);
+			Search(p.right, criteria, result, data);
 			break;
 
 		case "Address":
 			if (p == null)
 				return;
 
-			Search(p.left, n,result, data);
+			Search(p.left, criteria, result, data);
 
 			if (p.data.getAddress().equals(data)) {
 				result.insert(p.data);
 			}
-			Search(p.right, n,result, data);
+			Search(p.right, criteria, result, data);
 			break;
 		}
-		
+
 	}
 
-	public LinkedList<Contact> Search(String n, String data) {
+	public LinkedList<Contact> Search(String criteria, String data) {
 		LinkedList<Contact> result = new LinkedList<Contact>();
-		Search(root, n, result, data);
+		Search(root, criteria, result, data);
 		return result;
 	}
 
