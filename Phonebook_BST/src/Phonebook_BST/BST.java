@@ -113,75 +113,68 @@ public class BST {
 		return isExist(root, contact.getPhoneNumber());
 	}
 
-	private boolean Search(BSTNode p, String n, String data) {
-		boolean found = false, left, right;
+	private void Search(BSTNode p, String n,LinkedList<Contact> result, String data) {
 		switch (n) {
 
 		case "FirstName":
 			if (p == null)
-				return false;
-
-			left = Search(p.left, n, data);
+				return ;
+			Search(p.left, n,result, data);
 
 			int index = p.data.getName().indexOf(" ");
 			if (index != -1) {
 				String firstName = p.data.getName().substring(0, index);
-				if (firstName.equalsIgnoreCase(data))
-					System.out.println(p.data.toString());
-				return true;
+				if (firstName.equalsIgnoreCase(data)) {
+					result.insert(p.data);
+				}
 			}
 
-			right = Search(p.right, n, data);
-			found = left || right;
+			Search(p.right, n,result, data);
 			break;
 
 		case "Email":
 			if (p == null)
-				return false;
+				return ;
 
-			left = Search(p.left, n, data);
-
+			Search(p.left, n,result, data);
 			if (p.data.getEmail().equals(data)) {
-				System.out.println(p.data.toString());
-				return true;
+				result.insert(p.data);
 			}
-			right = Search(p.right, n, data);
-			found = left || right;
+
+			Search(p.right, n,result, data);
 			break;
 
 		case "Birthday":
 			if (p == null)
-				return false;
+				return;
 
-			left = Search(p.left, n, data);
+			Search(p.left, n,result, data);
 
 			if (p.data.getBirthday().equals(data)) {
-				System.out.println(p.data.toString());
-				return true;
+				result.insert(p.data);				
 			}
-			right = Search(p.right, n, data);
-			found = left || right;
+			Search(p.right, n,result, data);
 			break;
 
 		case "Address":
 			if (p == null)
-				return false;
+				return;
 
-			left = Search(p.left, n, data);
+			Search(p.left, n,result, data);
 
 			if (p.data.getAddress().equals(data)) {
-				System.out.println(p.data.toString());
-				return true;
+				result.insert(p.data);
 			}
-			right = Search(p.right, n, data);
-			found = left || right;
+			Search(p.right, n,result, data);
 			break;
 		}
-		return found;
+		
 	}
 
-	public boolean Search(String n, String data) {
-		return Search(root, n, data);
+	public LinkedList<Contact> Search(String n, String data) {
+		LinkedList<Contact> result = new LinkedList<Contact>();
+		Search(root, n, result, data);
+		return result;
 	}
 
 	public Contact SearchByName(String name) {
@@ -196,6 +189,7 @@ public class BST {
 			return p.data;
 		} else if (name.compareTo(root.data.getName()) < 0)
 			return SearchByName(p.left, name);
+
 		else
 			return SearchByName(p.right, name);
 	}
@@ -213,9 +207,9 @@ public class BST {
 			return p.data;
 		}
 
-		Contact leftResult = SearchByPhoneNumber(p.left, phoneNumber);
-		if (leftResult != null) {
-			return leftResult;
+		Contact left = SearchByPhoneNumber(p.left, phoneNumber);
+		if (left != null) {
+			return left;
 		}
 
 		return SearchByPhoneNumber(p.right, phoneNumber);
