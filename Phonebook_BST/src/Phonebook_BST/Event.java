@@ -54,18 +54,20 @@ public class Event {
 	}
 
 	public void DeleteContactInEvent(String name) {
+
 		ContactInEvent.FindFirst();
 		while (!ContactInEvent.last()) {
 			if (ContactInEvent.retrieve().equals(name)) {
 				ContactInEvent.remove();
 				size--;
-			}
+			}else 
 			ContactInEvent.FindNext();
 		}
-		if (ContactInEvent.retrieve().equals(name)) {
-			ContactInEvent.remove();
-			size--;
-		}
+		if (!ContactInEvent.empty())
+			if (ContactInEvent.retrieve().equals(name)) {
+				ContactInEvent.remove();
+				size--;
+			}
 	}
 
 	public String getDateAndTime() {
@@ -104,15 +106,7 @@ public class Event {
 		return ContactInEvent;
 	}
 
-	public void printContactInEvent() {
 
-		ContactInEvent.FindFirst();
-		while (!ContactInEvent.last()) {
-			System.out.print(ContactInEvent.retrieve() + " , ");
-			ContactInEvent.FindNext();
-		}
-		System.out.print(ContactInEvent.retrieve() + "\n");
-	}
 
 	public void setContactInEvent(String contactName) {
 		ContactInEvent.insert(contactName);
@@ -137,19 +131,19 @@ public class Event {
 
 	public void displayEvent() {
 		System.out.println(
-				"Title: " + Title + "\nDateAndTime: " + DateAndTime + "\nlocation: " + location + "\nContacts name:");
-
-		ContactInEvent.FindFirst();
-		while (!ContactInEvent.last()) {
-			System.out.println(ContactInEvent.retrieve());
-			ContactInEvent.FindNext();
-		}
-		System.out.println(ContactInEvent.retrieve() + "\n");
+				"Type: " + Type + "\nTitle: " + Title + "\nDateAndTime: " + DateAndTime + "\nlocation: " + location);
+		if (Type.equalsIgnoreCase("Event")) {
+			System.out.println("Contacts name:");
+			ContactInEvent.FindFirst();
+			while (!ContactInEvent.last()) {
+				System.out.println(ContactInEvent.retrieve());
+				ContactInEvent.FindNext();
+			}
+			System.out.println(ContactInEvent.retrieve() + "\n");
+		} else
+			System.out.println("Contact name: " + contactName + "\n");
 
 	}
 
-	public void displayAppointment() {
-		System.out.println("Title: " + Title + "\nDateAndTime: " + DateAndTime + "\nlocation: " + location
-				+ "\nContact name: " + contactName + "\n");
-	}
+	
 }
