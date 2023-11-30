@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class Phonebook_BST {
 	static BST Contacts = new BST();
 	static LinkedList<Event> eventList = new LinkedList<>();
-	static LinkedList<Event> appointmentList = new LinkedList<>();
 
 	public static void main(String[] args) {
 		Phonebook_BST PhoneBook = new Phonebook_BST();
@@ -81,7 +80,15 @@ public class Phonebook_BST {
 				case "3":
 					System.out.print("Enter the contact's email address:");
 					String contactEmailAddress = scan.nextLine();
-					if (!Contacts.Search("Email", contactEmailAddress))
+					LinkedList<Contact> result = Contacts.Search("Email", contactEmailAddress);
+					if (result != null) {
+						result.FindFirst();
+						while (!result.last()) {
+							System.out.println(result.retrieve());
+							result.FindNext();
+						}
+						System.out.println(result.retrieve());
+					} else if (result == null)
 						System.out.println("There is no contact with this email");
 
 					break;
@@ -89,7 +96,15 @@ public class Phonebook_BST {
 				case "4":
 					System.out.print("Enter the contact's address:");
 					String contactAddress = scan.nextLine();
-					if (!Contacts.Search("Address", contactAddress))
+					LinkedList<Contact> result1 = Contacts.Search("Address", contactAddress);
+					if (result1 != null) {
+						result1.FindFirst();
+						while (!result1.last()) {
+							System.out.println(result1.retrieve());
+							result1.FindNext();
+						}
+						System.out.println(result1.retrieve());
+					} else
 						System.out.println("There is no contact with this address");
 
 					break;
@@ -97,7 +112,15 @@ public class Phonebook_BST {
 				case "5":
 					System.out.print("Enter the contact's birthday:");
 					String contactBirthday = scan.nextLine();
-					if (!Contacts.Search("Birthday", contactBirthday))
+					LinkedList<Contact> result2 = Contacts.Search("Birthday", contactBirthday);
+					if (result2 != null) {
+						result2.FindFirst();
+						while (!result2.last()) {
+							System.out.println(result2.retrieve());
+							result2.FindNext();
+						}
+						System.out.println(result2.retrieve());
+					} else
 						System.out.println("There is no contact with this birthday");
 
 					break;
@@ -114,19 +137,6 @@ public class Phonebook_BST {
 					System.out.print("Enter contact name:");
 					String deleteName = scan.nextLine();
 
-					if (appointmentList.empty())
-						System.out.println("");
-					else {
-						appointmentList.FindFirst();
-						while (!appointmentList.last()) {
-							if (appointmentList.retrieve().getContactName().equals(deleteName))
-								appointmentList.remove();
-							appointmentList.FindNext();
-						}
-						if (appointmentList.retrieve().getContactName().equals(deleteName))
-							appointmentList.remove();
-
-					}
 					if (PhoneBook.DeleteContact(deleteName))
 						System.out.println("Contact deleted successfully");
 					else
@@ -139,19 +149,6 @@ public class Phonebook_BST {
 					String deletePhoneNumber = scan.nextLine();
 					Contact ContactToDelete = Contacts.SearchByPhoneNumber(deletePhoneNumber);// search for the contact
 					if (ContactToDelete != null) { // if the contact found
-						if (appointmentList.empty())
-							System.out.println("");
-						else {
-							appointmentList.FindFirst();
-							while (!appointmentList.last()) {
-								if (appointmentList.retrieve().getContactName().equals(ContactToDelete.getName()))
-									appointmentList.remove();
-								appointmentList.FindNext();
-							}
-							if (appointmentList.retrieve().getContactName().equals(ContactToDelete.getName()))
-								appointmentList.remove();
-
-						}
 
 						if (PhoneBook.DeleteContact(ContactToDelete.getName()))
 							System.out.println("Contact deleted successfully");
@@ -272,7 +269,7 @@ public class Phonebook_BST {
 
 							if (PhoneBook.addAppointment(appointment)) {
 								System.out.println("Appointment added successfully!");
-								c.setevents_appointments(appointment);
+								c.setevents_appointments(appointment); // include the appointment in the contact's events_appointments list
 							}
 						} else {
 							System.out.println("Contact has a conflict, can't add the appointment.");
@@ -304,7 +301,7 @@ public class Phonebook_BST {
 					case "1": // search by contact name for event
 
 						System.out.print("Enter contacts name seperated by a comma:");
-						/* String */ ContactName = scan.nextLine();
+						ContactName = scan.nextLine();
 						break;
 
 					case "2": // search by contact name for appointment
@@ -321,12 +318,12 @@ public class Phonebook_BST {
 					case "1": // search by title for event
 
 						System.out.print("Enter event title:");
-						/* String */ EventORAppointmentTitle = scan.nextLine();
+						EventORAppointmentTitle = scan.nextLine();
 						break;
 
 					case "2": // search by title for appointment
 						System.out.print("Enter appointment title:");
-						/* String */ EventORAppointmentTitle = scan.nextLine();
+						EventORAppointmentTitle = scan.nextLine();
 						break;
 					}
 					break;
@@ -370,23 +367,21 @@ public class Phonebook_BST {
 
 				System.out.print("Enter the first name:");
 				String firstName = scan.nextLine();
-				if (!Contacts.Search("FirstName", firstName))
+				LinkedList<Contact> result = Contacts.Search("FirstName", firstName);
+				if (result != null) {
+					result.FindFirst();
+					while (!result.last()) {
+						System.out.println(result.retrieve());
+						result.FindNext();
+					}
+					System.out.println(result.retrieve());
+				} else
 					System.out.println("There is no contact with this name");
 
 				break;
 
 			case "7":
-				System.out.println("Enter type:\n1.Event\n2.Appointment");
-				String type1 = scan.nextLine();
-
-				switch (type1) {
-				case "1":
-					PhoneBook.printAllEvent();
-					break;
-				case "2":
-					PhoneBook.printAllappointment();
-					break;
-				}
+				PhoneBook.printAllEvent();
 				break;
 
 			case "8":
@@ -424,14 +419,16 @@ public class Phonebook_BST {
 		eventList.FindFirst();
 		while (!eventList.last()) {
 
-			if (eventList.retrieve().getDateAndTime().equals(event.getDateAndTime())) {
+			if (eventList.retrieve().getType().equalsIgnoreCase("event")
+					&& eventList.retrieve().getDateAndTime().equals(event.getDateAndTime())) {
 				found = true;
 
 			}
 			eventList.FindNext();
 
 		}
-		if (eventList.retrieve().getDateAndTime().equals(event.getDateAndTime()))
+		if (eventList.retrieve().getType().equalsIgnoreCase("event")
+				&& eventList.retrieve().getDateAndTime().equals(event.getDateAndTime()))
 			found = true;
 
 		if (!found) {
@@ -443,27 +440,29 @@ public class Phonebook_BST {
 
 	public boolean addAppointment(Event appointment) {
 		boolean found = false;
-		if (appointmentList.empty()) {
-			appointmentList.Add(appointment);
+		if (eventList.empty()) {
+			eventList.Add(appointment);
 			return true;
 		}
-		appointmentList.FindFirst();
-		while (!appointmentList.last()) {
+		eventList.FindFirst();
+		while (!eventList.last()) {
 
-			if (appointmentList.retrieve().getTitle().equals(appointment.getTitle())
-					|| appointmentList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
+			if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+					&& eventList.retrieve().getTitle().equals(appointment.getTitle())
+					|| eventList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
 				found = true;
 			}
-			appointmentList.FindNext();
+			eventList.FindNext();
 
 		}
-		if (appointmentList.retrieve().getTitle().equals(appointment.getTitle())
-				|| appointmentList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
+		if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+				&& eventList.retrieve().getTitle().equals(appointment.getTitle())
+				|| eventList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
 			found = true;
 		}
 
 		if (!found) {
-			appointmentList.Add(appointment);
+			eventList.Add(appointment);
 			return true;
 		} else
 			return false;
@@ -483,21 +482,6 @@ public class Phonebook_BST {
 
 	}
 
-	public void printAllappointment() {
-		if (appointmentList.empty()) {
-			System.out.println("there are no appointments");
-			return;
-		}
-		appointmentList.FindFirst();
-		while (!appointmentList.last()) {
-			appointmentList.retrieve().displayAppointment();
-
-			appointmentList.FindNext();
-		}
-		appointmentList.retrieve().displayAppointment();
-
-	}
-
 	public void printEventDetails(String criteria, String nameORTitle) {
 
 		if (eventList.empty())
@@ -511,7 +495,8 @@ public class Phonebook_BST {
 			eventList.FindFirst();
 			while (!eventList.last()) {
 				for (int i = 0; i < contactNames.length; i++) {
-					if (eventList.retrieve().getContactName().contains(contactNames[i]))
+					if (eventList.retrieve().getType().equalsIgnoreCase("Event")
+							&& eventList.retrieve().getContactName().contains(contactNames[i]))
 						count++;
 					else
 						count--;
@@ -524,7 +509,8 @@ public class Phonebook_BST {
 				count = 0;
 			}
 			for (int i = 0; i < contactNames.length; i++) {
-				if (eventList.retrieve().getContactName().contains(contactNames[i]))
+				if (eventList.retrieve().getType().equalsIgnoreCase("Event")
+						&& eventList.retrieve().getContactName().contains(contactNames[i]))
 					count++;
 				else
 					count--;
@@ -537,11 +523,13 @@ public class Phonebook_BST {
 		case "title":
 			eventList.FindFirst();
 			while (!eventList.last()) {
-				if (eventList.retrieve().getTitle().equals(nameORTitle))
+				if (eventList.retrieve().getType().equalsIgnoreCase("Event")
+						&& eventList.retrieve().getTitle().equals(nameORTitle))
 					eventList.retrieve().displayEvent();
 				eventList.FindNext();
 			}
-			if (eventList.retrieve().getTitle().equals(nameORTitle))
+			if (eventList.retrieve().getType().equalsIgnoreCase("Event")
+					&& eventList.retrieve().getTitle().equals(nameORTitle))
 				eventList.retrieve().displayEvent();
 			eventList.FindNext();
 
@@ -552,37 +540,41 @@ public class Phonebook_BST {
 
 	public void printAppointmentDetails(String criteria, String nameORTitle) {
 
-		if (appointmentList.empty())
+		if (eventList.empty())
 			System.out.println("There are no appointments");
 
 		switch (criteria) {
 		case "name":
-			if (!appointmentList.empty()) {
-				appointmentList.FindFirst();
-				while (!appointmentList.last()) {
-					if (appointmentList.retrieve().getContactName().equals(nameORTitle))
-						appointmentList.retrieve().displayAppointment();
-					appointmentList.FindNext();
+			if (!eventList.empty()) {
+				eventList.FindFirst();
+				while (!eventList.last()) {
+					if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+							&& eventList.retrieve().getContactName().equals(nameORTitle))
+						eventList.retrieve().displayEvent();
+					eventList.FindNext();
 				}
 
-				if (appointmentList.retrieve().getContactName().equals(nameORTitle))
-					appointmentList.retrieve().displayAppointment();
-				appointmentList.FindNext();
+				if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+						&& eventList.retrieve().getContactName().equals(nameORTitle))
+					eventList.retrieve().displayEvent();
+				eventList.FindNext();
 			}
 
 			break;
 
 		case "title":
-			if (!appointmentList.empty()) {
-				appointmentList.FindFirst();
-				while (!appointmentList.last()) {
-					if (appointmentList.retrieve().getTitle().equals(nameORTitle))
-						appointmentList.retrieve().displayAppointment();
-					appointmentList.FindNext();
+			if (!eventList.empty()) {
+				eventList.FindFirst();
+				while (!eventList.last()) {
+					if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+							&& eventList.retrieve().getTitle().equals(nameORTitle))
+						eventList.retrieve().displayEvent();
+					eventList.FindNext();
 				}
-				if (appointmentList.retrieve().getTitle().equals(nameORTitle))
-					appointmentList.retrieve().displayAppointment();
-				appointmentList.FindNext();
+				if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+						&& eventList.retrieve().getTitle().equals(nameORTitle))
+					eventList.retrieve().displayEvent();
+				eventList.FindNext();
 			}
 			break;
 
@@ -596,14 +588,16 @@ public class Phonebook_BST {
 		else {
 			eventList.FindFirst();
 			while (!eventList.last()) {
-				if (eventList.retrieve().getTitle().equalsIgnoreCase(eventTitle)
+				if (eventList.retrieve().getType().equalsIgnoreCase("Event")
+						&& eventList.retrieve().getTitle().equalsIgnoreCase(eventTitle)
 						&& eventList.retrieve().getDateAndTime().equals(DateAndTime)
 						&& eventList.retrieve().getLocation().equals(Location))
 					ContactsShareEvent = eventList.retrieve().getContactInEvent();
 				eventList.FindNext();
 
 			}
-			if (eventList.retrieve().getTitle().equalsIgnoreCase(eventTitle)
+			if (eventList.retrieve().getType().equalsIgnoreCase("Event")
+					&& eventList.retrieve().getTitle().equalsIgnoreCase(eventTitle)
 					&& eventList.retrieve().getDateAndTime().equals(DateAndTime)
 					&& eventList.retrieve().getLocation().equals(Location)) {
 				ContactsShareEvent = eventList.retrieve().getContactInEvent();
@@ -630,18 +624,9 @@ public class Phonebook_BST {
 					return true;
 				eventList.FindNext();
 			}
-			if (eventList.retrieve().getDateAndTime().equals(DateAndTime))
+			if (eventList.retrieve().getDateAndTime().equals(DateAndTime)) {
 				return true;
-		}
-		if (!appointmentList.empty()) {
-			appointmentList.FindFirst();
-			while (!appointmentList.last()) {
-				if (appointmentList.retrieve().getDateAndTime().equals(DateAndTime))
-					return true;
-				appointmentList.FindNext();
 			}
-			if (appointmentList.retrieve().getDateAndTime().equals(DateAndTime))
-				return true;
 		}
 		return false;
 	}
@@ -653,23 +638,30 @@ public class Phonebook_BST {
 			if (!eventList.empty()) {
 				eventList.FindFirst();
 				while (!eventList.last()) {
-					if (eventList.retrieve().isExist(name)) {
+					if (eventList.retrieve().getType().equalsIgnoreCase("Event")
+							&& eventList.retrieve().isExist(name)) {
 						eventList.retrieve().DeleteContactInEvent(name);
 						if (eventList.retrieve().getSize() == 0)
 							eventList.remove();
-					}
-					eventList.FindNext();
+					} else if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+							&& eventList.retrieve().getContactName().equalsIgnoreCase(name)) {
+						eventList.remove();
+					} else
+						eventList.FindNext();
 				}
 
-				if (eventList.retrieve().isExist(name)) {
+				if (eventList.retrieve().getType().equalsIgnoreCase("Event") && eventList.retrieve().isExist(name)) {
 					eventList.retrieve().DeleteContactInEvent(name);
 					if (eventList.retrieve().getSize() == 0)
 						eventList.remove();
+				} else if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+						&& eventList.retrieve().getContactName().equalsIgnoreCase(name)) {
+					eventList.remove();
 				}
 			}
-
-			return Contacts.removekey(name);
 		}
+		return Contacts.removekey(name);
+
 	}
 
 }
