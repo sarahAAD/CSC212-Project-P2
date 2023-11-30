@@ -43,7 +43,7 @@ public class BST {
 
 	}
 
-	public void inOrder(BSTNode p) { // this method is for printing the contacts LNR
+	private void inOrder(BSTNode p) { // this method is for printing the contacts LNR
 		if (p != null) {
 			inOrder(p.left);
 			System.out.println(p.data.toString());
