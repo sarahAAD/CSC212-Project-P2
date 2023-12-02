@@ -95,23 +95,7 @@ public class BST {
 		return false;
 	}
 
-	private boolean isExist(BSTNode root, String phoneNum) {
-		if (root == null) {
-			return false;
-		}
-		boolean left = isExist(root.left, phoneNum);
-
-		if (root.data.getPhoneNumber().equalsIgnoreCase(phoneNum))
-			return true;
-
-		boolean right = isExist(root.right, phoneNum);
-
-		return right || left;
-	}
-
-	public boolean isExist(Contact contact) {
-		return isExist(root, contact.getPhoneNumber());
-	}
+	
 
 	private void Search(BSTNode p, String criteria, LinkedList<Contact> result, String data) {
 		switch (criteria) {
