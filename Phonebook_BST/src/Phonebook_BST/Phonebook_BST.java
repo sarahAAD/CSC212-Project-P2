@@ -409,9 +409,9 @@ public class Phonebook_BST {
 	}
 
 	public boolean AddContact(Contact contact) {
-		if (Contacts.isExist(contact))
+		if (Contacts.SearchByPhoneNumber(contact.getPhoneNumber())!=null)
 			return false;
-		return Contacts.insertContact(contact.getName(), contact);
+		return Contacts.insertContact(contact.getName().toLowerCase(), contact);
 	}
 
 	public boolean AddEvent(Event event) {
