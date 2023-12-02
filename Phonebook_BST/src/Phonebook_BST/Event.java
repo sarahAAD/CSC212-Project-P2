@@ -7,7 +7,7 @@ public class Event {
 	private String contactName;
 	private LinkedList<String> ContactInEvent = new LinkedList<String>();
 	private String Type;
-	private int size;
+	private int size = 0;
 
 	public Event() {
 	}
@@ -20,14 +20,15 @@ public class Event {
 		contactName = event.contactName;
 
 	}
+
 	public Event(String eventTitle, String DateAndTime, String location, String type) {
 		this.Title = eventTitle;
 		this.DateAndTime = DateAndTime;
 		this.location = location;
 		Type = type;
-	
 
 	}
+
 	public Event(String contactName, String eventTitle, String DateAndTime, String location, String type) {
 		this.Title = eventTitle;
 		this.DateAndTime = DateAndTime;
@@ -40,7 +41,7 @@ public class Event {
 	public int compareTo(Event event) {
 		return Title.compareTo(event.Title);
 	}
-	
+
 	public boolean isExist(String ContactName) {
 
 		boolean found = false;
@@ -62,24 +63,30 @@ public class Event {
 
 	public void DeleteContactInEvent(String name) {
 		String names = "";
+		    ContactInEvent.FindFirst();
+		    
+		    while (!ContactInEvent.last()) {
+		        if (ContactInEvent.retrieve().equals(name)) {
+		            ContactInEvent.remove();
+		            size--;
+		            ContactInEvent.FindFirst();
+		        } else {
+		            ContactInEvent.FindNext();
+		        }
+		    }
+
+		    if (ContactInEvent.retrieve().equals(name)) {
+		        ContactInEvent.remove();
+		        size--;
+		    }
+		
+
 		ContactInEvent.FindFirst();
 		while (!ContactInEvent.last()) {
-			if (ContactInEvent.retrieve().equals(name)) {
-				ContactInEvent.remove();
-				size--;
-			}
+			names += ContactInEvent.retrieve() + ", ";
 			ContactInEvent.FindNext();
 		}
-		if (ContactInEvent.retrieve().equals(name)) {
-			ContactInEvent.remove();
-			size--;
-		}
-		ContactInEvent.FindFirst();
-		while (!ContactInEvent.last()) {
-			names += ContactInEvent.retrieve()+", ";
-			ContactInEvent.FindNext();
-		}
-		names += ContactInEvent.retrieve() ;
+		names += ContactInEvent.retrieve();
 		setContactName(names);
 	}
 
@@ -144,7 +151,7 @@ public class Event {
 		System.out.println(
 				"Type: " + Type + "\nTitle: " + Title + "\nDateAndTime: " + DateAndTime + "\nlocation: " + location);
 		if (Type.equalsIgnoreCase("Event")) {
-			System.out.println("Contact names: " + contactName + "\n");
+			System.out.println("Contacts name: " + contactName + "\n");
 
 		} else
 			System.out.println("Contact name: " + contactName + "\n");
