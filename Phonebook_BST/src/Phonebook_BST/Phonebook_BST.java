@@ -452,17 +452,15 @@ public class Phonebook_BST {
 		eventList.FindFirst();
 		while (!eventList.last()) {
 
-			if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
-					&& eventList.retrieve().getTitle().equals(appointment.getTitle())
-					|| eventList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
+		if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+					&& eventList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
 				found = true;
 			}
 			eventList.FindNext();
 
 		}
-		if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
-				&& eventList.retrieve().getTitle().equals(appointment.getTitle())
-				|| eventList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
+	if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
+					&& eventList.retrieve().getDateAndTime().equals(appointment.getDateAndTime())) {
 			found = true;
 		}
 
