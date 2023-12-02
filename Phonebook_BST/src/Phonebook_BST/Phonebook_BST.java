@@ -176,7 +176,7 @@ public class Phonebook_BST {
 					String eventTimeAndDate = scan.nextLine();
 					System.out.print("Enter event location:");
 					String eventLocation = scan.nextLine();
-					Event NewEvent = new Event(contactsName, eventTitle, eventTimeAndDate, eventLocation, "Event");
+					Event NewEvent = new Event(eventTitle, eventTimeAndDate, eventLocation, "Event");
 
 					String ContactsNotFound = ""; // contacts not found in the Contacts BST.
 					String ContactsAdded = ""; // contacts that have successfully scheduled for the event.
@@ -192,6 +192,10 @@ public class Phonebook_BST {
 							if (c != null) { // if the contacts found
 								if (event.isExist(names[i])) { // check if it exists in the event.
 									Exist += ", " + names[i];
+								} else {
+									ContactsAdded += ", " + names[i];
+									event.setContactInEvent(names[i]);
+									c.setevents_appointments(event);
 								}
 
 							} else { // if the contact is not found
@@ -202,6 +206,8 @@ public class Phonebook_BST {
 							}
 
 						} // end for
+						event.setContactName(event.getContactName()+ContactsAdded);
+
 					} // end if
 
 					else {
@@ -229,27 +235,25 @@ public class Phonebook_BST {
 							if (ContactsAdded.isEmpty())
 								System.out.println("can't add the event");
 							else {
-								if (PhoneBook.AddEvent(NewEvent)) // if a contact is added, call the method AddEvent to
-																	// create
-																	// the object and add it to the eventList.
-								{
-
-									if (!ContactsNotFound.isEmpty()) // print the names of contacts that do not exist
-										System.out.println(ContactsNotFound + " not exist");
-
-									if (!ContactsAdded.isEmpty()) // print the names of contacts that have successfully
-																	// scheduled for the event
-										System.out.println("Event scheduled successfully for: " + ContactsAdded);
-
-									if (!Exist.isEmpty()) // print the names of contacts that are already scheduled for
-															// the
-															// event
-										System.out.println("The event has been scheduled before for: " + Exist);
-								}
+								PhoneBook.AddEvent(NewEvent); // if a contact is added, call the method AddEvent to
+								NewEvent.setContactName(ContactsAdded);
 							}
-						} else
-							System.out.println("can't add the event");
-					}
+						}
+					} // create
+						// the object and add it to the eventList.
+
+					if (!ContactsNotFound.isEmpty()) // print the names of contacts that do not exist
+						System.out.println(ContactsNotFound + " not exist");
+
+					if (!ContactsAdded.isEmpty()) // print the names of contacts that have successfully
+													// scheduled for the event
+						System.out.println("Event scheduled successfully for: " + ContactsAdded);
+
+					if (!Exist.isEmpty()) // print the names of contacts that are already scheduled for
+											// the
+											// event
+						System.out.println("The event has been scheduled before for: " + Exist);
+
 					break;
 
 				case "2":
@@ -269,7 +273,8 @@ public class Phonebook_BST {
 
 							if (PhoneBook.addAppointment(appointment)) {
 								System.out.println("Appointment added successfully!");
-								c.setevents_appointments(appointment); // include the appointment in the contact's events_appointments list
+								c.setevents_appointments(appointment); // include the appointment in the contact's
+																		// events_appointments list
 							}
 						} else {
 							System.out.println("Contact has a conflict, can't add the appointment.");
