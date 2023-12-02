@@ -340,12 +340,14 @@ public class Phonebook_BST {
 					switch (criteria) {
 					case "1": // contacts names
 
-						PhoneBook.printEventDetails("name", ContactName);
+						if (PhoneBook.printEventDetails("name", ContactName) == false) 
+							System.out.println("No event with these contacts was found");
 						break;
 
 					case "2": // event title
 
-						PhoneBook.printEventDetails("title", EventORAppointmentTitle);
+						if (PhoneBook.printEventDetails("title", EventORAppointmentTitle) == false)
+							System.out.println("No event with this title was found");
 						break;
 					}
 					break;
@@ -355,12 +357,14 @@ public class Phonebook_BST {
 					switch (criteria) {
 					case "1": // contact name
 
-						PhoneBook.printAppointmentDetails("name", ContactName);
+						if (PhoneBook.printAppointmentDetails("name", ContactName) == false) 
+							System.out.println("No appointment with this contact was found");
 						break;
 
 					case "2": // appointment title
 
-						PhoneBook.printAppointmentDetails("title", EventORAppointmentTitle);
+						if (PhoneBook.printAppointmentDetails("title", EventORAppointmentTitle) == false)
+							System.out.println("No appointment with this title was found");
 						break;
 					}
 					break;
@@ -485,7 +489,9 @@ public class Phonebook_BST {
 
 	}
 
-	public void printEventDetails(String criteria, String nameORTitle) {
+	public boolean printEventDetails(String criteria, String nameORTitle) {
+		
+		boolean found = false;
 
 		if (eventList.empty())
 			System.out.println("There are no events");
@@ -499,49 +505,57 @@ public class Phonebook_BST {
 			while (!eventList.last()) {
 				for (int i = 0; i < contactNames.length; i++) {
 					if (eventList.retrieve().getType().equalsIgnoreCase("Event")
-							&& eventList.retrieve().getContactName().contains(contactNames[i]))
+							&& eventList.retrieve().getContactName().contains(contactNames[i])) 
 						count++;
 					else
 						count--;
 				}
 				if (count == eventList.retrieve().getSize()) {
 					eventList.retrieve().displayEvent();
+					found = true;
 				}
 				count = 0;
 				eventList.FindNext();
-				count = 0;
 			}
+			
 			for (int i = 0; i < contactNames.length; i++) {
-				if (eventList.retrieve().getType().equalsIgnoreCase("Event")
-						&& eventList.retrieve().getContactName().contains(contactNames[i]))
+				if (eventList.retrieve().getType().equalsIgnoreCase("Event") && eventList.retrieve().getContactName().contains(contactNames[i]))
 					count++;
 				else
 					count--;
 			}
-			if (count == eventList.retrieve().getSize())
+			if (count == eventList.retrieve().getSize()) {
 				eventList.retrieve().displayEvent();
+				found = true;
+			}
 
 			break;
 
 		case "title":
 			eventList.FindFirst();
 			while (!eventList.last()) {
-				if (eventList.retrieve().getType().equalsIgnoreCase("Event")
-						&& eventList.retrieve().getTitle().equals(nameORTitle))
+				if (eventList.retrieve().getType().equalsIgnoreCase("Event") && eventList.retrieve().getTitle().equals(nameORTitle)) {
 					eventList.retrieve().displayEvent();
+					found = true;
+				}
 				eventList.FindNext();
 			}
 			if (eventList.retrieve().getType().equalsIgnoreCase("Event")
-					&& eventList.retrieve().getTitle().equals(nameORTitle))
+					&& eventList.retrieve().getTitle().equals(nameORTitle)) {
 				eventList.retrieve().displayEvent();
+				found = true;
+			}
 			eventList.FindNext();
 
 			break;
 
 		}
+		return found;
 	}
 
-	public void printAppointmentDetails(String criteria, String nameORTitle) {
+	public boolean printAppointmentDetails(String criteria, String nameORTitle) {
+		
+		boolean found = false;
 
 		if (eventList.empty())
 			System.out.println("There are no appointments");
@@ -552,14 +566,18 @@ public class Phonebook_BST {
 				eventList.FindFirst();
 				while (!eventList.last()) {
 					if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
-							&& eventList.retrieve().getContactName().equals(nameORTitle))
+							&& eventList.retrieve().getContactName().equals(nameORTitle)){
 						eventList.retrieve().displayEvent();
+						found = true;
+					}
 					eventList.FindNext();
 				}
 
 				if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
-						&& eventList.retrieve().getContactName().equals(nameORTitle))
+						&& eventList.retrieve().getContactName().equals(nameORTitle)){
 					eventList.retrieve().displayEvent();
+					found = true;
+				}
 				eventList.FindNext();
 			}
 
@@ -570,19 +588,25 @@ public class Phonebook_BST {
 				eventList.FindFirst();
 				while (!eventList.last()) {
 					if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
-							&& eventList.retrieve().getTitle().equals(nameORTitle))
+							&& eventList.retrieve().getTitle().equals(nameORTitle)){
 						eventList.retrieve().displayEvent();
+						found = true;
+					}
 					eventList.FindNext();
 				}
 				if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
-						&& eventList.retrieve().getTitle().equals(nameORTitle))
+						&& eventList.retrieve().getTitle().equals(nameORTitle)){
 					eventList.retrieve().displayEvent();
+					found = true;
+				}
 				eventList.FindNext();
 			}
 			break;
 
 		}
+		return found; 
 	}
+
 
 	public void PrintSameEvent(String eventTitle, String DateAndTime, String Location) {
 		LinkedList<String> ContactsShareEvent = new LinkedList<String>();
