@@ -184,14 +184,11 @@ public class BST {
 	private Contact SearchByName(BSTNode p, String name) {
 		if (p == null)
 			return null;
-
-		if (p.data.getName().equalsIgnoreCase(name)) {
-			return p.data;
-		} else if (name.compareTo(root.data.getName()) < 0)
-			return SearchByName(p.left, name);
-
+		if (findkey(name))
+			return current.data;
 		else
-			return SearchByName(p.right, name);
+			return null;
+
 	}
 
 	public Contact SearchByPhoneNumber(String PhoneNumber) {
