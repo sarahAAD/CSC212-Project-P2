@@ -79,8 +79,8 @@ public class LinkedList<T> {
 		while (tmp != null) {
 			Event Event = (Event) tmp.data;
 
-			if (Event.getTitle().equals(((Event)val).getTitle())
-					&& Event.getDateAndTime().equals(((Event)val).getDateAndTime())) {
+			if (Event.getTitle().equalsIgnoreCase(((Event)val).getTitle())
+					&& Event.getDateAndTime().equalsIgnoreCase(((Event)val).getDateAndTime())&& Event.getType().equalsIgnoreCase(((Event)val).getType())) {
 				
 				return Event;
 			}
