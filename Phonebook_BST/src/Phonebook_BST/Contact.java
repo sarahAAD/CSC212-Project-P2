@@ -26,9 +26,8 @@ public class Contact implements Comparable<String> {
 		
 	}
 
-	@Override
+	
 	public int compareTo(String contactName) {
-
 		return Name.compareTo(contactName);
 	}
 
@@ -93,17 +92,7 @@ public class Contact implements Comparable<String> {
 		this.events_appointments.Add(event);;
 	}
 
-public void displayList() {
-	if(!events_appointments.empty()) {
-		events_appointments.FindFirst();
-		while(!events_appointments.last()) {
-			System.out.println(events_appointments.retrieve().toString());
-			events_appointments.FindNext();
-		}
-		System.out.println(events_appointments.retrieve().toString());
 
-	}
-}
 
 
 }
