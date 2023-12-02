@@ -283,8 +283,8 @@ public class Phonebook_BST {
 							break;
 						} else if (!PhoneBook.Conflict(AppointmentTimeAndDate)) {
 
-							PhoneBook.addAppointment(appointment);
-							System.out.println("Appointment added successfully!");
+							if (PhoneBook.addAppointment(appointment))
+								System.out.println("Appointment added successfully!");
 							c.setevents_appointments(appointment); // include the appointment in the contact's
 																	// events_appointments list
 						}
@@ -353,7 +353,7 @@ public class Phonebook_BST {
 					switch (criteria) {
 					case "1": // contacts names
 
-						if (PhoneBook.printEventDetails("name", ContactName) == false) 
+						if (PhoneBook.printEventDetails("name", ContactName) == false)
 							System.out.println("No event with these contacts was found");
 						break;
 
@@ -370,7 +370,7 @@ public class Phonebook_BST {
 					switch (criteria) {
 					case "1": // contact name
 
-						if (PhoneBook.printAppointmentDetails("name", ContactName) == false) 
+						if (PhoneBook.printAppointmentDetails("name", ContactName) == false)
 							System.out.println("No appointment with this contact was found");
 						break;
 
@@ -417,8 +417,7 @@ public class Phonebook_BST {
 				break;
 
 			case "9":
-				Contacts.inOrder(Order.inOrder);
-				break;
+				return;
 			}
 
 		} while (choice != "9");
@@ -451,7 +450,7 @@ public class Phonebook_BST {
 			return true;
 		}
 
-		if (!!Conflict(appointment.getDateAndTime())) {
+		if (!Conflict(appointment.getDateAndTime())) {
 			eventList.Add(appointment);
 			return true;
 		} else
@@ -652,8 +651,9 @@ public class Phonebook_BST {
 					if (eventList.retrieve().getType().equalsIgnoreCase("Event")
 							&& eventList.retrieve().isExist(name)) {
 						eventList.retrieve().DeleteContactInEvent(name);
-						if (eventList.retrieve().getSize() == 0)
+						if (eventList.retrieve().getSize() == 0) {
 							eventList.remove();
+						}
 					} else if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
 							&& eventList.retrieve().getContactName().equalsIgnoreCase(name)) {
 						eventList.remove();
@@ -663,8 +663,9 @@ public class Phonebook_BST {
 
 				if (eventList.retrieve().getType().equalsIgnoreCase("Event") && eventList.retrieve().isExist(name)) {
 					eventList.retrieve().DeleteContactInEvent(name);
-					if (eventList.retrieve().getSize() == 0)
+					if (eventList.retrieve().getSize() == 0) {
 						eventList.remove();
+					}
 				} else if (eventList.retrieve().getType().equalsIgnoreCase("Appointment")
 						&& eventList.retrieve().getContactName().equalsIgnoreCase(name)) {
 					eventList.remove();
