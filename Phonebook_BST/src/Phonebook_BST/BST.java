@@ -73,11 +73,7 @@ public class BST {
 
 	}
 
-	public boolean findkey(String key) {
-		return findkey(root, key);
-	}
-
-	private boolean findkey(BSTNode root, String key) {
+public boolean findkey(String key) {
 		BSTNode p = root, q = root;
 		if (empty())
 			return false;
