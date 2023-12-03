@@ -389,17 +389,7 @@ public class Phonebook_BST {
 
 				System.out.print("Enter the first name:");
 				String firstName = scan.nextLine();
-				LinkedList<Contact> result = Contacts.Search("FirstName", firstName);
-				if (result != null) {
-					result.FindFirst();
-					while (!result.last()) {
-						System.out.println(result.retrieve());
-						result.FindNext();
-					}
-					System.out.println(result.retrieve());
-				} else
-					System.out.println("There is no contact with this name");
-
+				PhoneBook.printByFirstName(firstName);
 				break;
 
 			case "7":
@@ -692,6 +682,19 @@ public class Phonebook_BST {
 			return false;
 		}
 		return true;
+	}
+
+	public void printByFirstName(String name) {
+		LinkedList<Contact> result = Contacts.Search("FirstName", name); 
+		if (!result.empty()) {
+			result.FindFirst();
+			while (!result.last()) {
+				System.out.println(result.retrieve());
+				result.FindNext();
+			}
+			System.out.println(result.retrieve());
+		} else
+			System.out.println("There is no contact with this name");
 	}
 
 }
